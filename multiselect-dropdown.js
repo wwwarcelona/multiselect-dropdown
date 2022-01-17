@@ -101,7 +101,7 @@ function MultiselectDropdown(options){
   }
 
   
-  document.querySelectorAll("select[multiple]").forEach((el,k)=>{
+  document.querySelectorAll("select[multiple], .multiple > select").forEach((el,k)=>{
     
     var div=newEl('div',{class:'multiselect-dropdown',style:{width:config.style?.width??el.clientWidth+'px',padding:config.style?.padding??''}});
     el.style.display='none';
@@ -145,17 +145,33 @@ function MultiselectDropdown(options){
         op.appendChild(ic);
         op.appendChild(newEl('label',{text:o.text}));
 
-        op.addEventListener('click',()=>{
+        op.addEventListener('click',(e)=>{
+
+          if(el.parentElement.classList.contains('multiple-single-select')){
+            op.classList.toggle('checked');
+            op.querySelector("input").checked=!op.querySelector("input").checked;
+            list.querySelectorAll("input").forEach(i=>i.checked=false);
+            Array.from(el.options).map(x=>x.selected=false);
+          }
+
           op.classList.toggle('checked');
           op.querySelector("input").checked=!op.querySelector("input").checked;
           op.optEl.selected=!!!op.optEl.selected;
           el.dispatchEvent(new Event('change'));
+
+          if (el.parentElement.classList.contains('multiple-single-select')) {
+            listWrap.style.display='none';
+            div.refresh();
+            e.stopPropagation();
+          }
+
         });
         ic.addEventListener('click',(ev)=>{
           ic.checked=!ic.checked;
         });
 
         list.appendChild(op);
+
       });
       div.listEl=listWrap;
 
