@@ -146,6 +146,7 @@ function MultiselectDropdown(options){
         op.appendChild(newEl('label',{text:o.text}));
 
         op.addEventListener('click',(e)=>{
+          e.stopPropagation();
 
           if(el.parentElement.classList.contains('multiple-single-select')){
             op.classList.toggle('checked');
@@ -162,7 +163,6 @@ function MultiselectDropdown(options){
           if (el.parentElement.classList.contains('multiple-single-select')) {
             listWrap.style.display='none';
             div.refresh();
-            e.stopPropagation();
           }
 
         });
@@ -201,9 +201,14 @@ function MultiselectDropdown(options){
     });
 
     div.addEventListener('click',()=>{
-      div.listEl.style.display='block';
-      search.focus();
-      search.select();
+      if (div.listEl.style.display === 'block') {
+        listWrap.style.display='none';
+        div.refresh();
+      } else {
+        div.listEl.style.display='block';
+        search.focus();
+        search.select();
+      }
     });
     
     document.addEventListener('click', function(event) {
